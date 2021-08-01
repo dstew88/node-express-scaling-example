@@ -1,0 +1,49 @@
+version: "3.7"
+
+services:
+  redis:
+    image: redis
+    networks:
+      - application-network
+    expose:
+      - "6379"
+
+  non-blocking-worker:
+    build:
+      context: ./non_blocking_worker/
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - application-network
+
+  node-server-instance:
+    build:
+      context: ./node_server/
+    depends_on:
+      - redis
+      - non-blocking-worker
+    environment:
+      - ALIAS=1
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SERVER_PORT=3000
+    networks:
+      - application-network
+    expose:
+      - "3000"
+  
+  nginx:
+    build:
+      context: ./nginx/
+    depends_on:
+      - node-server-instance
+    networks:
+      - application-network
+    ports:
+      - "8080:80"
+
+networks:
+  application-network:

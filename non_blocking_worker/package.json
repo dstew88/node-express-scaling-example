@@ -1,0 +1,16 @@
+{
+  "name": "non_blocking_worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "non-blocking-worker.js",
+  "scripts": {
+    "dev": "nodemon non-blocking-worker.js",
+    "start": "node non-blocking-worker.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "kue": "^0.11.6"
+  }
+}
