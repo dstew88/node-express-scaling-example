@@ -1,10 +1,10 @@
-const kue = require('kue');
+const bull = require('bull');
 
 const { REDIS_HOST, REDIS_PORT } = process.env;
 
-const queue = kue.createQueue(
+const queue = bull(
+  'q',
   {
-    prefix: 'q',
     redis: {
       host: `${REDIS_HOST}`,
       port: REDIS_PORT,
@@ -14,17 +14,14 @@ const queue = kue.createQueue(
 
 const nonBlockingTask = (req, res, next) => {
   // non-blocking code here
-  const nonBlockingJob = queue.create('non-blocking', {
-    loops: 10000,
-  })
-    .removeOnComplete(true)
-    .attempts(5)
-    .backoff({ delay: 60 * 1000, type: 'exponential' })
-    .save();
-
-  nonBlockingJob.on('failed', (err) => {
-    console.log('Job failed');
-  });
+  queue.add(
+    {
+      time: 10000,
+    },
+    {
+      attempts: 5,
+    },
+  );
 
   res.status(200).json({
     type: 'non-blocking',

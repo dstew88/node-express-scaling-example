@@ -1,10 +1,10 @@
-const kue = require('kue');
+const bull = require('bull');
 
 const { REDIS_HOST, REDIS_PORT } = process.env;
 
-const queue = kue.createQueue(
+const queue = bull(
+  'q',
   {
-    prefix: 'q',
     redis: {
       host: `${REDIS_HOST}`,
       port: REDIS_PORT,
@@ -12,9 +12,11 @@ const queue = kue.createQueue(
   },
 );
 
-queue.process('non-blocking', 5, (job, done) => {
+queue.process((job, done) => {
   const start = Date.now();
-  while (Date.now() < start + 10000) {
+  const { time } = job.data;
+
+  while (Date.now() < start + time) {
     // mimic a CPU intensive task that blocks the event loop
   }
   console.log('Background worker completed blocking job');
