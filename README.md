@@ -23,7 +23,7 @@ The aim is to demonstrate a number of things:
 
 To deploy, simply run:
 ```
-docker-compose up --scale node-server-instance-1=N
+docker-compose up --scale node-server-instance=N
 ```
 where `N` is the number of `node_server` instances to deploy.
 
