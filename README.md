@@ -1,6 +1,6 @@
 # Simple Node.js Scaling Example
 
-Simple example of sclaing an Express.js application.
+Simple example of scaling an Express.js application.
 
 ## Description
 
